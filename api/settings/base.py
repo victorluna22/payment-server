@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'cielo',
     'payment',
 ]
 
@@ -154,4 +155,12 @@ CORS_ORIGIN_WHITELIST = (
         'localhost',
         '127.0.0.1',
     )
+
+CIELO_SANDBOX_AFFILIATION_ID = '1006993069'
+CIELO_SANDBOX_API_KEY = '25fbb99741c739dd84d7b06ec78c9bac718838630f30b112d033ce2e621b34f3'
+CIELO_AFFILIATION_ID = ''
+CIELO_API_KEY = ''
+
+REDECARD_URL_PROD = 'https://ecommerce.userede.com.br/pos_virtual/wskomerci/cap.asmx'
+REDECARD_URL_DEV = 'https://ecommerce.userede.com.br/pos_virtual/wskomerci/cap_teste.asmx'
 
