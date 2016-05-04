@@ -163,4 +163,5 @@ CIELO_API_KEY = ''
 
 REDECARD_URL_PROD = 'https://ecommerce.userede.com.br/pos_virtual/wskomerci/cap.asmx'
 REDECARD_URL_DEV = 'https://ecommerce.userede.com.br/pos_virtual/wskomerci/cap_teste.asmx'
-
+REDECARD_SANDBOX_AFFILIATION_ID = '123456789'
+REDECARD_AFFILIATION_ID = ''

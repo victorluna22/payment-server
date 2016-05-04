@@ -2,7 +2,7 @@
 import uuid
 from django.db import models
 from .providers.cielo_provider import pay_cielo, pay_cielo_test
-# from .providers.redecard_provider import pay_redecard, pay_redecard_test
+from .providers.redecard_provider import pay_redecard_test
 
 CIELO, REDECARD = 'cielo', 'redecard'
 
@@ -44,8 +44,8 @@ class PaymentProvider(models.Model):
         if self.slug == CIELO:
             return pay_cielo_test(data, payment)
         elif self.slug == REDECARD:
-            # return pay_redecard_test(data, payment)
-            pass
+            return pay_redecard_test(data, payment)
+
 
 class TargetProvider(models.Model):
     provider = models.ForeignKey(PaymentProvider, verbose_name='Provedor')

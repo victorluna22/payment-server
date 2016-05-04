@@ -2,6 +2,7 @@
 from decimal import Decimal
 from datetime import datetime
 from cielo import PaymentAttempt, GetAuthorizedException
+from rest_framework.exceptions import APIException
 from django.conf import settings
 
 
@@ -26,11 +27,11 @@ def pay_cielo_test(data, payment):
     try:
         attempt.get_authorized()
     except GetAuthorizedException, e:
-        payment.status_code = 1000
+        payment.status_code = attempt.error_id
         payment.response_text = e
         payment.paid_at = datetime.now()
         payment.save()
-        print u'Não foi possível processar: %s' % e
+        raise APIException(u'Erro %s' % e)
     else:
         attempt.capture()
         payment.status_code = 0
@@ -60,11 +61,11 @@ def pay_cielo(data, payment):
     try:
         attempt.get_authorized()
     except GetAuthorizedException, e:
-        payment.status_code = 1000
+        payment.status_code = attempt.error_id
         payment.response_text = e
         payment.paid_at = datetime.now()
         payment.save()
-        print u'Não foi possível processar: %s' % e
+        raise APIException(u'Erro %s' % e)
     else:
         attempt.capture()
         payment.status_code = 0
