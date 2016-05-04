@@ -4,8 +4,6 @@
     <list default="true" id="36a6ce3c-7d91-4dc3-8594-ba2853b9968f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/payment/admin.py" afterPath="$PROJECT_DIR$/api/payment/admin.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/payment/models.py" afterPath="$PROJECT_DIR$/api/payment/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/payment/serializers.py" afterPath="$PROJECT_DIR$/api/payment/serializers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/payment/views.py" afterPath="$PROJECT_DIR$/api/payment/views.py" />
     </list>
     <ignored path="payment-server.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -49,14 +47,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/payment/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8688811">
-              <caret line="120" column="40" selection-start-line="120" selection-start-column="40" selection-end-line="120" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="79" column="72" selection-start-line="79" selection-start-column="72" selection-end-line="79" selection-end-column="72" />
               <folding>
                 <element signature="e#24#35#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="admin.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/api/payment/admin.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.39335665">
+              <caret line="18" column="31" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -109,10 +117,10 @@
         <option value="$PROJECT_DIR$/api/payment/__init__.py" />
         <option value="$PROJECT_DIR$/api/urls.py" />
         <option value="$PROJECT_DIR$/api/settings/base.py" />
-        <option value="$PROJECT_DIR$/api/payment/admin.py" />
         <option value="$PROJECT_DIR$/api/payment/views.py" />
         <option value="$PROJECT_DIR$/api/payment/serializers.py" />
         <option value="$PROJECT_DIR$/api/payment/models.py" />
+        <option value="$PROJECT_DIR$/api/payment/admin.py" />
       </list>
     </option>
   </component>
@@ -543,14 +551,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/payment/admin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="50" selection-start-line="23" selection-start-column="50" selection-end-line="23" selection-end-column="50" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/payment/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -573,11 +573,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/payment/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8688811">
-          <caret line="120" column="40" selection-start-line="120" selection-start-column="40" selection-end-line="120" selection-end-column="40" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="79" column="72" selection-start-line="79" selection-start-column="72" selection-end-line="79" selection-end-column="72" />
           <folding>
             <element signature="e#24#35#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/payment/admin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.39335665">
+          <caret line="18" column="31" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
+          <folding />
         </state>
       </provider>
     </entry>

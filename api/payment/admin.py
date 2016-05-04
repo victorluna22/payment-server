@@ -6,10 +6,20 @@ class PaymentProviderAdmin(admin.ModelAdmin):
      model = PaymentProvider
      list_display = ('id', 'name', 'slug', 'status')
 
+     # def has_add_permission(self, request):
+     #     return False
+     #
+     # def has_delete_permission(self, request, obj=None):
+     #     return False
+
 
 class TargetProviderAdmin(admin.ModelAdmin):
     model = TargetProvider
-    list_display = ('provider', 'updated_at')
+    list_display = ('provider', 'updated_at', 'acao')
+    list_display_links = ('acao', )
+
+    def acao(self, obj):
+        return 'mudar'
 
     def has_add_permission(self, request):
         return False

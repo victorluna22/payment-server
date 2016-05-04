@@ -76,9 +76,8 @@ class PaymentProvider(models.Model):
             payment.save()
 
 
-
 class TargetProvider(models.Model):
-    provider = models.ForeignKey(PaymentProvider)
+    provider = models.ForeignKey(PaymentProvider, verbose_name='Provedor')
     updated_at = models.DateTimeField(verbose_name='Última atualização', auto_now=True)
 
     class Meta:
