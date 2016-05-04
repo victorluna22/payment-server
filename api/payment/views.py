@@ -16,15 +16,12 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
         provider = PaymentProvider.objects.get_provider(request.data.get('provider_slug'))
 
-        data = provider.pay(request.data)
+        pay_serializer = PaymentSerializer(data=request.data)
+        pay_serializer.is_valid(raise_exception=True)
+        payment = pay_serializer.save(provider=provider)
 
-        pay_serializer = PaymentSerializer(data)
-        self.perform_create(serializer)
+        # data = provider.pay(request.data)
 
         headers = self.get_success_headers(pay_serializer.data)
         return Response(pay_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    def perform_create(self, serializer):
-        user = self.request.user.get_user()
-        serializer.save(customer=user)
 

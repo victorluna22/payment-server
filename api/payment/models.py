@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import uuid
 from django.db import models
+from decimal import Decimal
+from cielo import PaymentAttempt, GetAuthorizedException
 
 
 class PaymentProviderManager(models.Manager):
@@ -12,7 +14,7 @@ class PaymentProviderManager(models.Manager):
                 provider = self.get_any_provider()
         else:
             if TargetProvider.objects.all().exists():
-                provider = TargetProvider.objects.all().order_by('-id')[0]
+                provider = TargetProvider.objects.all().order_by('-id')[0].provider
             else:
                 provider = self.get_any_provider()
         return provider
@@ -36,9 +38,33 @@ class PaymentProvider(models.Model):
     def __unicode__(self):
         return self.name
 
-    #{provider, value, status_code, name, cpf, installments, paid_at}
-    def pay(self):
-        pass
+    #{provider, value, status_code, name, cpf, card_type, installments, paid_at}
+    def pay(self, data):
+        return self.pay_cielo(data)
+
+    def pay_cielo(self, data):
+        params = {
+            'affiliation_id': '1234567890',
+            'api_key': 'ABCDEFG123456789',
+            'card_type': PaymentAttempt.VISA,
+            'total': Decimal('1.00'),
+            'order_id': '7DSD163AH1',  # strings são permitidas
+            'card_number': '4012001037141112',
+            'cvc2': 423,  # código de segurança
+            'exp_month': 1,
+            'exp_year': 2010,
+            'transaction': PaymentAttempt.CASH,
+            'card_holders_name': 'JOAO DA SILVA',
+            'installments': 1,
+        }
+
+        attempt = PaymentAttempt(**params)
+        try:
+            attempt.get_authorized()
+        except GetAuthorizedException, e:
+            print u'Não foi possível processar: %s' % e
+        else:
+            attempt.capture()
 
 
 class TargetProvider(models.Model):
@@ -53,12 +79,24 @@ class TargetProvider(models.Model):
         return self.provider.name
 
 
+VISA, MASTERCARD, DINERS, DISCOVER, ELO, AMEX = 'visa', 'mastercard', 'diners', 'discover', 'elo', 'amex'
+CARD_TYPES = (
+    (VISA, 'Visa'),
+    (MASTERCARD, 'Mastercard'),
+    (DINERS, 'Diners'),
+    (DISCOVER, 'Discover'),
+    (ELO, 'Elo'),
+    (AMEX, 'Amex'),
+)
+
+
 class Payment(models.Model):
-    payment_key = models.CharField(max_length=64, verbose_name=u"Chave", unique=True)
+    payment_key = models.UUIDField(max_length=64, default=uuid.uuid4, editable=False, unique=True)
     provider = models.ForeignKey(PaymentProvider)
     value = models.DecimalField(u'Valor', max_digits=9, decimal_places=2, default=0)
     status_code = models.IntegerField('Código de retorno', null=True, blank=True, db_index=True)
     name = models.CharField('Nome', max_length=100)
+    card_type = models.CharField('Bandeira', max_length=30, choices=CARD_TYPES)
     cpf = models.CharField('CPF', max_length=14)
     installments = models.IntegerField('Parcelas', default=1)
     created_at = models.DateTimeField(verbose_name='Gerado em', auto_now_add=True)

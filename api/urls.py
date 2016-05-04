@@ -1,12 +1,17 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import RedirectView
 from rest_framework import routers
+from payment.views import PaymentViewSet
+
+router = routers.DefaultRouter()
+router.register(r'payment', PaymentViewSet, 'Payments')
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url=reverse_lazy('admin:index'))),
     url(r'^admin/', admin.site.urls),
+    url(r'^api/', include(router.urls))
 ]
 
 
