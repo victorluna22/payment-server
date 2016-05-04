@@ -16,7 +16,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
-        fields = ('payment_key', 'provider', 'value', 'status_code', 'created_at', 'paid_at')
+        fields = ('payment_key', 'provider', 'value', 'name', 'cpf', 'installments', 'status_code', 'created_at', 'paid_at')
         read_only_fields = ('created_at',)
 
 

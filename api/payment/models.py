@@ -36,7 +36,7 @@ class PaymentProvider(models.Model):
     def __unicode__(self):
         return self.name
 
-    #{provider, value, status_code, paid_at}
+    #{provider, value, status_code, name, cpf, installments, paid_at}
     def pay(self):
         pass
 
