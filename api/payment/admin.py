@@ -21,7 +21,7 @@ class TargetProviderAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     model = Payment
     readonly_fields = Payment._meta.get_all_field_names()
-    list_display = ('payment_key', 'provider', 'value', 'status_code', 'created_at', 'paid_at')
+    list_display = ('payment_key', 'name', 'value', 'card_type', 'provider', 'status_code', 'created_at', 'paid_at')
 
     def has_add_permission(self, request):
         return False

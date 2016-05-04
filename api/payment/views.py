@@ -20,7 +20,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         pay_serializer.is_valid(raise_exception=True)
         payment = pay_serializer.save(provider=provider)
 
-        # data = provider.pay(request.data)
+        provider.pay(request.data, payment)
 
         headers = self.get_success_headers(pay_serializer.data)
         return Response(pay_serializer.data, status=status.HTTP_201_CREATED, headers=headers)

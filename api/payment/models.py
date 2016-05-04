@@ -2,6 +2,7 @@
 import uuid
 from django.db import models
 from decimal import Decimal
+from datetime import datetime
 from cielo import PaymentAttempt, GetAuthorizedException
 
 
@@ -38,33 +39,42 @@ class PaymentProvider(models.Model):
     def __unicode__(self):
         return self.name
 
-    #{provider, value, status_code, name, cpf, card_type, installments, paid_at}
-    def pay(self, data):
-        return self.pay_cielo(data)
+    def pay(self, data, payment):
+        return self.pay_cielo(data, payment)
 
-    def pay_cielo(self, data):
+    def pay_cielo(self, data, payment):
         params = {
-            'affiliation_id': '1234567890',
-            'api_key': 'ABCDEFG123456789',
-            'card_type': PaymentAttempt.VISA,
-            'total': Decimal('1.00'),
-            'order_id': '7DSD163AH1',  # strings são permitidas
-            'card_number': '4012001037141112',
-            'cvc2': 423,  # código de segurança
-            'exp_month': 1,
-            'exp_year': 2010,
+            'affiliation_id': '1006993069',
+            'api_key': '25fbb99741c739dd84d7b06ec78c9bac718838630f30b112d033ce2e621b34f3',
+            'card_type': data.get('card_type'),
+            'total': Decimal(data.get('value')),
+            'order_id': payment.id,
+            'card_number': data.get('number'),
+            'cvc2': data.get('cvc'),
+            'exp_month': data.get('expiration_month'),
+            'exp_year': data.get('expiration_year'),
             'transaction': PaymentAttempt.CASH,
-            'card_holders_name': 'JOAO DA SILVA',
+            'card_holders_name': data.get('name'),
             'installments': 1,
+            'sandbox': True
         }
 
         attempt = PaymentAttempt(**params)
         try:
             attempt.get_authorized()
         except GetAuthorizedException, e:
+            payment.status_code = 1000
+            payment.response_text = e
+            payment.paid_at = datetime.now()
+            payment.save()
             print u'Não foi possível processar: %s' % e
         else:
             attempt.capture()
+            payment.status_code = 0
+            payment.paid_at = datetime.now()
+            payment.response_text = u'Transação realizada com sucesso'
+            payment.save()
+
 
 
 class TargetProvider(models.Model):
@@ -91,14 +101,15 @@ CARD_TYPES = (
 
 
 class Payment(models.Model):
-    payment_key = models.UUIDField(max_length=64, default=uuid.uuid4, editable=False, unique=True)
-    provider = models.ForeignKey(PaymentProvider)
+    payment_key = models.UUIDField(verbose_name='Chave de pagamento', max_length=64, default=uuid.uuid4, editable=False, unique=True)
+    provider = models.ForeignKey(PaymentProvider, verbose_name='Provedor')
     value = models.DecimalField(u'Valor', max_digits=9, decimal_places=2, default=0)
     status_code = models.IntegerField('Código de retorno', null=True, blank=True, db_index=True)
     name = models.CharField('Nome', max_length=100)
     card_type = models.CharField('Bandeira', max_length=30, choices=CARD_TYPES)
     cpf = models.CharField('CPF', max_length=14)
     installments = models.IntegerField('Parcelas', default=1)
+    response_text = models.TextField(verbose_name='Resposta do provedor', null=True, blank=True)
     created_at = models.DateTimeField(verbose_name='Gerado em', auto_now_add=True)
     paid_at = models.DateTimeField(verbose_name=u'Pago em', null=True, blank=True)
 
@@ -107,4 +118,4 @@ class Payment(models.Model):
         verbose_name_plural = u'Pagamentos Realizados'
 
     def __unicode__(self):
-        return self.payment_key
+        return self.payment_key.get_hex()
