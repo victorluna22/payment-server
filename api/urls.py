@@ -1,7 +1,13 @@
 from django.conf.urls import url
 from django.contrib import admin
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic import RedirectView
 from rest_framework import routers
 
 urlpatterns = [
+    url(r'^$', RedirectView.as_view(url=reverse_lazy('admin:index'))),
     url(r'^admin/', admin.site.urls),
 ]
+
+
+admin.site.site_header = 'Servidor de Pagamento'

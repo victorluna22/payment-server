@@ -1,3 +1,35 @@
 from django.contrib import admin
+from .models import PaymentProvider, Payment, TargetProvider
 
-# Register your models here.
+
+class PaymentProviderAdmin(admin.ModelAdmin):
+     model = PaymentProvider
+     list_display = ('id', 'name', 'slug', 'status')
+
+
+class TargetProviderAdmin(admin.ModelAdmin):
+    model = TargetProvider
+    list_display = ('provider', 'updated_at')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class PaymentAdmin(admin.ModelAdmin):
+    model = Payment
+    readonly_fields = Payment._meta.get_all_field_names()
+    list_display = ('payment_key', 'provider', 'value', 'status_code', 'created_at', 'paid_at')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(PaymentProvider, PaymentProviderAdmin)
+admin.site.register(Payment, PaymentAdmin)
+admin.site.register(TargetProvider, TargetProviderAdmin)
