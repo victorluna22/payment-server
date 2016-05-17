@@ -20,8 +20,12 @@ class PaymentViewSet(viewsets.ModelViewSet):
         pay_serializer.is_valid(raise_exception=True)
         payment = pay_serializer.save(provider=provider)
 
-        provider.pay(request.data, payment)
+        data = pay_serializer.data
 
-        headers = self.get_success_headers(pay_serializer.data)
-        return Response(pay_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        response = provider.pay(request.data, payment)
+        if response and response.get('redirect_url'):
+            data['redirect_url'] = response.get('redirect_url')
+
+        headers = self.get_success_headers(data)
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 

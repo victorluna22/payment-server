@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import uuid
 from django.db import models
-from .providers.cielo_provider import pay_cielo, pay_cielo_test
-from .providers.redecard_provider import pay_redecard_test
+from .providers.cielo_provider import pay_cielo_test, pay_cielo
+from .providers.redecard_provider import pay_redecard_test, pay_redecard
+from .providers.pagseguro_provider import pay_pagseguro_test, pay_pagseguro
 
-CIELO, REDECARD = 'cielo', 'redecard'
+CIELO, REDECARD, PAGSEGURO = 'cielo', 'redecard', 'pagseguro'
 
 
 class PaymentProviderManager(models.Manager):
@@ -45,6 +46,8 @@ class PaymentProvider(models.Model):
             return pay_cielo_test(data, payment)
         elif self.slug == REDECARD:
             return pay_redecard_test(data, payment)
+        elif self.slug == PAGSEGURO:
+            return pay_pagseguro_test(data, payment)
 
 
 class TargetProvider(models.Model):
@@ -80,6 +83,8 @@ class Payment(models.Model):
     cpf = models.CharField('CPF', max_length=14)
     installments = models.IntegerField('Parcelas', default=1)
     response_text = models.TextField(verbose_name='Resposta do provedor', null=True, blank=True)
+    pagseguro_url = models.URLField(verbose_name='URL Pagseguro', null=True, blank=True)
+    pagseguro_code = models.CharField('Código Pagseguro', max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(verbose_name='Gerado em', auto_now_add=True)
     paid_at = models.DateTimeField(verbose_name=u'Pago em', null=True, blank=True)
 
