@@ -13,12 +13,16 @@ def pay_pagseguro_test(data, payment):
     if response and response.get('status_code') == 200:
         payment.pagseguro_url = response.get('redirect_url')
         payment.pagseguro_code = response.get('code')
+        payment.is_authorized = False
+        payment.is_paid = False
         payment.save()
-        return response
+        return payment
     else:
         payment.status_code = response.get('status_code')
         payment.response_text = response.get('message')
         payment.paid_at = datetime.now()
+        payment.is_authorized = False
+        payment.is_paid = False
         payment.save()
         raise APIException(u'Erro %s' % response.get('message'))
 
