@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    # 'pagseguro',
+    'pagseguro',
     'payment',
 ]
 
@@ -160,3 +160,8 @@ PAGSEGURO_EMAIL = 'victorluna22@gmail.com'
 PAGSEGURO_TOKEN = '0D12C3907E6540E196771B03240674FA'
 PAGSEGURO_SANDBOX = False
 PAGSEGURO_LOG_IN_MODEL = True # se o valor for True, os checkouts e transacões vão ser logadas no database.
+
+# PAYPAL_TEST = True
+# PAYPAL_WPP_USER = "victorluna22-facilitator_api1.gmail.com"
+# PAYPAL_WPP_PASSWORD = "1402944428"
+# PAYPAL_WPP_SIGNATURE = "Am.1ly7-pWkc7Y59220DtdIjXe7QAVEfUXqeuh3G-EU.WveiOBsv7dwM"

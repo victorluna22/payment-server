@@ -4,8 +4,9 @@ from django.db import models
 from .providers.cielo_provider import pay_cielo_test, pay_cielo, authorize_cielo, confirm_cielo
 from .providers.redecard_provider import pay_redecard_test, pay_redecard, authorize_redecard, confirm_redecard
 from .providers.pagseguro_provider import pay_pagseguro_test, pay_pagseguro
+from .providers.paypal_provider import pay_paypal_test
 
-CIELO, REDECARD, PAGSEGURO = 'cielo', 'redecard', 'pagseguro'
+CIELO, REDECARD, PAGSEGURO, PAYPAL = 'cielo', 'redecard', 'pagseguro', 'paypal'
 
 
 class PaymentProviderManager(models.Manager):
@@ -60,6 +61,8 @@ class PaymentProvider(models.Model):
             return pay_redecard(data, payment)
         elif self.slug == PAGSEGURO:
             return pay_pagseguro(data, payment)
+        elif self.slug == PAYPAL:
+            return pay_paypal_test(data, payment)
 
     def pay_test(self, data, payment):
         if self.slug == CIELO:
@@ -68,6 +71,8 @@ class PaymentProvider(models.Model):
             return pay_redecard_test(data, payment)
         elif self.slug == PAGSEGURO:
             return pay_pagseguro(data, payment)
+        elif self.slug == PAYPAL:
+            return pay_paypal_test(data, payment)
 
 
 class TargetProvider(models.Model):
@@ -111,6 +116,7 @@ class Payment(models.Model):
     tid = models.CharField('Transação ID Cielo', max_length=100, null=True, blank=True)
     pagseguro_url = models.URLField(verbose_name='URL Pagseguro', null=True, blank=True)
     pagseguro_code = models.CharField('Código Pagseguro', max_length=255, null=True, blank=True)
+    paypal_code = models.CharField('Código Paypal', max_length=255)
     is_authorized = models.BooleanField('Aut.', default=0)
     is_paid = models.BooleanField('Pago', default=0)
     created_at = models.DateTimeField(verbose_name='Gerado em', auto_now_add=True)
