@@ -8,6 +8,7 @@ class PaymentProviderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PaymentProvider
+        fields = ('name', 'slug', 'status')
 
 
 class PaymentSerializer(serializers.ModelSerializer):

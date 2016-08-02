@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import uuid
 from django.db import models
-from .providers.cielo_provider import pay_cielo_test, pay_cielo, authorize_cielo, confirm_cielo
-from .providers.redecard_provider import pay_redecard_test, pay_redecard, authorize_redecard, confirm_redecard
+from .providers.cielo_provider import pay_cielo, authorize_cielo, confirm_cielo
+from .providers.redecard_provider import pay_redecard, authorize_redecard, confirm_redecard
 from .providers.pagseguro_provider import pay_pagseguro_test, pay_pagseguro
 from .providers.paypal_provider import pay_paypal_test
 
@@ -31,6 +31,10 @@ class PaymentProviderManager(models.Manager):
 class PaymentProvider(models.Model):
     name = models.CharField('Nome do Provedor', max_length=255)
     slug = models.SlugField('Slug')
+    company_code = models.CharField('Código', max_length=255, blank=True, null=True)
+    company_key = models.CharField('Chave', max_length=255, blank=True, null=True)
+    company_code_test = models.CharField('Código (homologação)', max_length=255, blank=True, null=True)
+    company_key_test = models.CharField('Chave (homologação)', max_length=255, blank=True, null=True)
     status = models.BooleanField('Ativo?', default=1)
 
     objects = PaymentProviderManager()
@@ -54,25 +58,25 @@ class PaymentProvider(models.Model):
         elif self.slug == REDECARD:
             return confirm_redecard(payment)
 
-    def pay(self, data, payment):
+    def pay(self, data, payment, test=False):
         if self.slug == CIELO:
-            return pay_cielo(data, payment)
+            return pay_cielo(data, payment, test)
         elif self.slug == REDECARD:
-            return pay_redecard(data, payment)
+            return pay_redecard(data, payment, test)
         elif self.slug == PAGSEGURO:
             return pay_pagseguro(data, payment)
         elif self.slug == PAYPAL:
             return pay_paypal_test(data, payment)
 
-    def pay_test(self, data, payment):
-        if self.slug == CIELO:
-            return pay_cielo_test(data, payment)
-        elif self.slug == REDECARD:
-            return pay_redecard_test(data, payment)
-        elif self.slug == PAGSEGURO:
-            return pay_pagseguro(data, payment)
-        elif self.slug == PAYPAL:
-            return pay_paypal_test(data, payment)
+    def get_auth(self, data, test=False):
+        if data.get('code'):
+            return data.get('code'), data.get('key')
+        elif test and self.company_code_test:
+            return self.company_code_test, self.company_key_test
+        elif not test and self.company_code:
+            return self.company_code, self.company_key
+        else:
+            return None, None
 
 
 class TargetProvider(models.Model):

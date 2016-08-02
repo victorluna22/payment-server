@@ -3,8 +3,9 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
+from rest_framework.exceptions import APIException
 from django.shortcuts import get_object_or_404
-from .models import Payment, PaymentProvider, TargetProvider
+from .models import Payment, PaymentProvider
 from .serializers import PaymentSerializer, BillingDataSerializer
 
 
@@ -18,16 +19,20 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
         provider = PaymentProvider.objects.get_provider(request.data.get('provider_slug'))
 
+        code, key = provider.get_auth(request.data, self.request.query_params.get('test'))
+        if not code:
+            raise APIException('Esta transação não possui credenciais de autenticação')
+
         pay_serializer = PaymentSerializer(data=request.data)
         pay_serializer.is_valid(raise_exception=True)
         payment = pay_serializer.save(provider=provider)
 
         data = pay_serializer.data
 
-        if 'test' in self.request.path:
-            p = provider.pay_test(request.data, payment)
-        else:
-            p = provider.pay_test(request.data, payment) # change to pay
+        data_post = request.data
+        data_post['code'] = code
+        data_post['key'] = key
+        p = provider.pay(data_post, payment, self.request.query_params.get('test'))
 
         response = PaymentSerializer(p)
 

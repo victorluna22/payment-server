@@ -74,7 +74,7 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'paymentserver',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '',
     }
 }
 

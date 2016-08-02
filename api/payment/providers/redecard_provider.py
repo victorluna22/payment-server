@@ -77,10 +77,9 @@ def confirm_redecard(payment):
     return payment
 
 
-
-def pay_redecard_test(data, payment):
+def pay_redecard(data, payment, test=False):
     params = {
-        'affiliation_id': settings.REDECARD_SANDBOX_AFFILIATION_ID,
+        'affiliation_id': data.get('code'),
         'total': Decimal(data.get('value')),
         'order_id': payment.id,
         'card_number': data.get('number'),
@@ -89,44 +88,7 @@ def pay_redecard_test(data, payment):
         'exp_year': data.get('expiration_year'),
         'card_holders_name': data.get('name'),
         'installments': 1,
-        'debug': True,
-    }
-
-    attempt = PaymentAttempt(**params)
-    try:
-        attempt.get_authorized(conftxn='S')
-    except GetAuthorizedException, e:
-        payment.status_code = attempt.codret
-        payment.response_text = attempt.msgret
-        payment.numcv = attempt.numcv
-        payment.numautor = attempt.numautor
-        payment.save()
-        raise APIException(u'Erro %s: %s' % (e.codret, e.msg))
-    else:
-        attempt.capture()
-
-    if attempt.msgret:
-        payment.status_code = attempt.codret
-        payment.response_text = attempt.msgret
-        payment.paid_at = datetime.now()
-        payment.is_authorized = True
-        payment.is_paid = True
-        payment.save()
-    return payment
-
-
-def pay_redecard(data, payment):
-    params = {
-        'affiliation_id': settings.REDECARD_AFFILIATION_ID,
-        'total': Decimal(data.get('value')),
-        'order_id': payment.id,
-        'card_number': data.get('number'),
-        'cvc2': data.get('cvc'),
-        'exp_month': data.get('expiration_month'),
-        'exp_year': data.get('expiration_year'),
-        'card_holders_name': data.get('name'),
-        'installments': 1,
-        'debug': False,
+        'debug': test,
     }
 
     attempt = PaymentAttempt(**params)

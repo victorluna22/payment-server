@@ -71,10 +71,10 @@ def confirm_cielo(payment):
     return payment
 
 
-def pay_cielo_test(data, payment):
+def pay_cielo(data, payment, test = False):
     params = {
-        'affiliation_id': settings.CIELO_SANDBOX_AFFILIATION_ID,
-        'api_key': settings.CIELO_SANDBOX_API_KEY,
+        'affiliation_id': data.get('code'),
+        'api_key': data.get('key'),
         'card_type': data.get('card_type'),
         'total': Decimal(data.get('value')),
         'order_id': payment.id,
@@ -85,44 +85,7 @@ def pay_cielo_test(data, payment):
         'transaction': PaymentAttempt.CASH,
         'card_holders_name': data.get('name'),
         'installments': 1,
-        'sandbox': True
-    }
-
-    attempt = PaymentAttempt(**params)
-    try:
-        attempt.get_authorized()
-    except GetAuthorizedException, e:
-        payment.status_code = attempt.error_id
-        payment.response_text = e
-        payment.save()
-        raise APIException(u'Erro %s' % e)
-    else:
-        attempt.capture()
-        payment.status_code = 0
-        payment.paid_at = datetime.now()
-        payment.tid = attempt.transaction_id
-        payment.is_authorized = True
-        payment.is_paid = True
-        payment.response_text = u'Transação realizada com sucesso'
-        payment.save()
-    return payment
-
-
-def pay_cielo(data, payment):
-    params = {
-        'affiliation_id': settings.CIELO_AFFILIATION_ID,
-        'api_key': settings.CIELO_API_KEY,
-        'card_type': data.get('card_type'),
-        'total': Decimal(data.get('value')),
-        'order_id': payment.id,
-        'card_number': data.get('number'),
-        'cvc2': data.get('cvc'),
-        'exp_month': data.get('expiration_month'),
-        'exp_year': data.get('expiration_year'),
-        'transaction': PaymentAttempt.CASH,
-        'card_holders_name': data.get('name'),
-        'installments': 1,
-        'sandbox': False
+        'sandbox': test
     }
 
     attempt = PaymentAttempt(**params)

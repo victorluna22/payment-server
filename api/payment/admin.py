@@ -4,7 +4,8 @@ from .models import PaymentProvider, Payment, TargetProvider
 
 class PaymentProviderAdmin(admin.ModelAdmin):
      model = PaymentProvider
-     list_display = ('id', 'name', 'slug', 'status')
+     list_display = ('name', 'slug', 'status')
+     list_display_links = ('name',)
 
      # def has_add_permission(self, request):
      #     return False
