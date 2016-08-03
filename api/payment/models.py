@@ -3,8 +3,8 @@ import uuid
 from django.db import models
 from .providers.cielo_provider import pay_cielo, authorize_cielo, confirm_cielo
 from .providers.redecard_provider import pay_redecard, authorize_redecard, confirm_redecard
-from .providers.pagseguro_provider import pay_pagseguro_test, pay_pagseguro
-from .providers.paypal_provider import pay_paypal_test
+from .providers.pagseguro_provider import pay_pagseguro
+from .providers.paypal_provider import pay_paypal
 
 CIELO, REDECARD, PAGSEGURO, PAYPAL = 'cielo', 'redecard', 'pagseguro', 'paypal'
 
@@ -64,9 +64,9 @@ class PaymentProvider(models.Model):
         elif self.slug == REDECARD:
             return pay_redecard(data, payment, test)
         elif self.slug == PAGSEGURO:
-            return pay_pagseguro(data, payment)
+            return pay_pagseguro(data, payment, test)
         elif self.slug == PAYPAL:
-            return pay_paypal_test(data, payment)
+            return pay_paypal(data, payment, test)
 
     def get_auth(self, data, test=False):
         if data.get('code'):
@@ -91,7 +91,7 @@ class TargetProvider(models.Model):
         return self.provider.name
 
 
-VISA, MASTERCARD, DINERS, DISCOVER, ELO, AMEX, JCB, AURA = 'visa', 'mastercard', 'diners', 'discover', 'elo', 'amex', 'JCB', 'Aura'
+VISA, MASTERCARD, DINERS, DISCOVER, ELO, AMEX, JCB, AURA = 'visa', 'mastercard', 'diners', 'discover', 'elo', 'amex', 'JCB', 'aura'
 CARD_TYPES = (
     (VISA, 'Visa'),
     (MASTERCARD, 'Mastercard'),

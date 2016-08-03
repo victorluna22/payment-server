@@ -5,18 +5,15 @@ from rest_framework.exceptions import APIException
 from django.conf import settings
 from datetime import datetime
 
-def pay_paypal_test(data, payment):
+def pay_paypal(data, payment, test=False):
+    mode = 'sandbox' if test else 'live'
     paypalrestsdk.configure({
-      "mode": "sandbox", # sandbox or live
-      "client_id": "AXOqegM0peervpbDEJLeM0KJs2bc1VyRtRFFUehqS2MrmGSmMTkNxaRzZwvAPM7raRJbjRbHXGoUKxyW",
-      "client_secret": "EJhZ64LGnHBOv1_0MEZv-rqw-nK_ieu0CNapOB6Toe9sFsVpQLW7wpGJU5eZzwJ37Y6SPkuSOi5U7Wzf" })
+      "mode": mode, # sandbox or live
+      "client_id": data.get('code'),
+      "client_secret": data.get('key')})
 
     payment = make_payment(paypalrestsdk, data, payment)
     return payment
-
-
-def pay_paypal(data, payment):
-    pass
 
 
 def make_payment(paypalrestsdk, data, payment):
